@@ -21,24 +21,24 @@ const Signup=()=>{
         }
     }
     return(
-        <>
-            <h2>Login</h2>
+        <div className='signup'>
+            <h2>Sign Up</h2>
             <form onSubmit={handleSubmit} method='post'>
-                <div>
+                <div className='input-group'>
                     <label>Username:</label>
                     <input type='text' value={username} onChange={(e)=>setUsername(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='input-group'>
                     <label>Email:</label>
                     <input type='email' value={email} onChange={(e)=>setEmail(e.target.value)} required/>
                 </div>
-                <div>
+                <div className='input-group'>
                     <label>Password:</label>
                     <input type='password' value={password} onChange={(e)=>setPassword(e.target.value)} required/>
                 </div>
                 <button type='submit'>Sign Up</button>
             </form>
-        </>
+        </div>
     );
 }
 export default Signup;
