@@ -21,7 +21,7 @@ router.post('/',async (req,res)=>{
         }
         const newUser=new User({username,email,password});
         await newUser.save();
-        res.json({message:`User signup successful`});
+        res.status(200).json({message:`User signup successful`});
     }catch(error){
         res.status(500,json({error:`Failed to signup ${error.message}`}));
     }
