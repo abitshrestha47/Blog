@@ -4,6 +4,7 @@ const User=require('./models/User');
 const router=express.Router();
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 require('./dbconfig');
 //cors to fetch between front and back to solve cors error simpy
 app.use(cors());
@@ -17,13 +18,14 @@ router.post('/',async (req,res)=>{
     try{
         const existingUser=await User.findOne({email});
         if(existingUser){
-            return res.status(400).json({error:`Email already registerd`});
+            res.json('existed');
+        }else{
+            const newUser=new User({username,email,password});
+            await newUser.save();
+            res.json('success');
         }
-        const newUser=new User({username,email,password});
-        await newUser.save();
-        res.status(200).json({message:`User signup successful`});
     }catch(error){
-        res.status(500,json({error:`Failed to signup ${error.message}`}));
+        res.status(500).json({error:`Failed to signup ${error.message}`});
     }
 })
 

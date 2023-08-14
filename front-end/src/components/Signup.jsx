@@ -19,14 +19,21 @@ const Signup=()=>{
                 password,
             })
             console.log(`sent`);
-            if(response.status===200){
-                toast(`Signup successful`);
+            if(response.data==='success'){
+                toast('Signup successful');
+                setTimeout(() => {
+                  navigate('/', { replace: false });
+                }, 1000);
+            }
+            else if(response.data==="existed"){
+                toast(`Email already taken`);
                 setTimeout(()=>{
-                    navigate('/', { replace: false });
-                },3000);
+                    setEmail('');
+                    setPassword('');
+                },500)
             }
             else{
-                console.log(`Signup failed`);
+                toast(`Failed to register`);
             }
         }catch(error){
             console.error(`error: ${error.message}`);
