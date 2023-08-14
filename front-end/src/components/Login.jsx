@@ -1,11 +1,20 @@
 import {useState} from 'react';
-
+import axios from 'axios'
 
 const Login=()=>{
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
-    const handleSubmit=(e)=>{
+    const handleSubmit=async (e)=>{
         e.preventDefault();
+        try{
+            const response=await axios.post('http://localhost:2000/login',{
+                email,
+                password,
+            })
+            await console.log(response);
+        }catch(e){
+            console.log(`Error:${e.message}`);
+        }
     }
     return(
         <div className='login'>

@@ -29,6 +29,17 @@ router.post('/',async (req,res)=>{
     }
 })
 
+router.post('/login',async (req,res)=>{
+    const {email,password}=req.body;
+    try{
+        const existEmail=await User.findOne({email});
+        if(existEmail){
+        }
+    }catch(e){
+
+    }
+})
+
 //mounting the routes
 app.use('/signup', router);
 
