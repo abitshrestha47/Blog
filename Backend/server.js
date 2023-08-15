@@ -49,8 +49,8 @@ loginRouter.post('/',async (req,res)=>{
             else{
                 console.log(`check`);
                 const secretKey='secret_key';
-                const token=jwt.sign({userId:existEmail._id},'',{expiresIn:'1h'});
-                res.status(200).json({token});
+                const token=jwt.sign({userId:existEmail._id},secretKey,{expiresIn:'1h'});
+                res.status(200).json({message:'success'});
             }
         }
     }catch(e){
