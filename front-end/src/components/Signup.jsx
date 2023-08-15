@@ -22,7 +22,7 @@ const Signup=()=>{
             if(response.data==='success'){
                 toast('Signup successful');
                 setTimeout(() => {
-                  navigate('/', { replace: false });
+                  navigate('/login', { replace: false });
                 }, 1000);
             }
             else if(response.data==="existed"){

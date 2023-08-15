@@ -1,9 +1,14 @@
 import {useState} from 'react';
 import axios from 'axios'
+import {ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login=()=>{
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
+    const navigate = useNavigate();
     const handleSubmit=async (e)=>{
         e.preventDefault();
         try{
@@ -11,13 +16,23 @@ const Login=()=>{
                 email,
                 password,
             })
-            await console.log(response);
+            if(response.data==='wrongpassword'){
+                toast(`Wrong password!`);
+            }
+            else if(response.status===200){
+                console.log('check');
+                toast(`Login successful!`);
+                setTimeout(()=>{
+                    navigate('/', { replace: false });
+                },1000)
+            }
         }catch(e){
             console.log(`Error:${e.message}`);
         }
     }
     return(
         <div className='login'>
+            <ToastContainer />
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <div className='input-group'>
