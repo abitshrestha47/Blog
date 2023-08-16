@@ -1,9 +1,20 @@
 const express=require('express');
 const app = express();
 const loginRouter=express.Router();
+const User=require('../models/User');
+const bcrypt=require('bcrypt');
+const cors = require('cors');
+require('../dbconfig');
+
+
+//cors to fetch between front and back to solve cors error simpy
+app.use(cors());
+
+//to fetch the data from the req.body middleware
+app.use(express.json());
+
 loginRouter.post('/',async (req,res)=>{
     const {email,password}=req.body;
-    console.log(password)
     try{
         const existEmail=await User.findOne({email});
         if(existEmail){
@@ -23,5 +34,4 @@ loginRouter.post('/',async (req,res)=>{
     }
 })
 
-app.use('/login',loginRouter);
-
+module.exports=loginRouter;

@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+.blogs{
+  display:flex;
+}
+
 .create-blog-container {
   display: flex;
   flex-direction: column;
