@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
 
+
 const Login=()=>{
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
@@ -23,7 +24,10 @@ const Login=()=>{
                 console.log('check');
                 toast(`Login successful!`);
                 setTimeout(()=>{
-                    navigate('/', { replace: false });
+                    // navigate('/login', { replace: false });
+                    if (navigate) {
+                        navigate('/', { replace: false });
+                      }
                 },1000)
             }
         }catch(e){
