@@ -1,23 +1,30 @@
 import  {useState} from 'react';
 import axios from 'axios'
 
+
 const CreateBlog = () => {
     //button=>category pass=>create blog and post then
     const [image,setImage]=useState('');
+    const [showImage,setshowImage]=useState('');
     const [title,setTitle]=useState('');
     const [story,setStory]=useState('');
     const [category, setCategory] = useState('0'); 
 
     const handleImageUpload=(e)=>{
         const selectedImage=URL.createObjectURL(e.target.files[0]);
-        setImage(selectedImage);
+        setshowImage(selectedImage);
+        setImage(e.target.files[0]);
     }
     const saveBlog=async (e)=>{
         e.preventDefault();
+        const formData=new FormData();
+        formData.append('title',title);
+        formData.append('story',story);
+        formData.append('category',category);
+        formData.append('image',image);
         try{
-            const response=await axios.post('http://localhost:2000/publishingblog',
-            {
-                title,story,image,category
+            const response=await axios.post('http://localhost:2000/publishingblog',formData,{
+                headers:{"Content-Type":"multipart/form-data"},
             });
             console.log(response);
         }catch(e){
@@ -30,14 +37,14 @@ const CreateBlog = () => {
         <div className="image-container">
         {image?
         (
-            <img src={image} alt='your image'/>
+            <img src={showImage} alt='your image'/>
         ):
         (
             <div className='add-image'>
                 <label htmlFor='image-upload' className='image-upload-label'>
                     Add Image
                 </label>
-                <input type='file' accept='image/*' id='image-upload' onChange={handleImageUpload} name="image"/>
+                <input type='file' accept='image/*' onChange={handleImageUpload} id='image-upload' name="image"/>
             </div>
         )}
       </div>

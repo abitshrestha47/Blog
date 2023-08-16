@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const jwt=require('jsonwebtoken');
 const loginRouter = require('./routes/loginrouter');
+const multer  = require('multer')
 const router=require('./routes/signuprouter');
 
 require('./dbconfig');
@@ -17,12 +18,24 @@ app.use(cors());
 //to fetch the data from the req.body middleware
 app.use(express.json());
 
-//using router for routes
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '../front-end/public/Images')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now()
+      cb(null, uniqueSuffix+file.originalname);
+    }
+  })
+  
+  const upload = multer({ storage: storage })
 
-blogrouter.post('/',async(req,res)=>{
-    const {title,story,category,image}=req.body;
+blogrouter.post('/',upload.single('image'),async(req,res)=>{
+    console.log('fsd');
+    const {title,story,category}=req.body;
+    const imageName=req.file.filename;
     try{
-        const newBlog=new Blog({title,story,category,image});
+        const newBlog=new Blog({title,story,category,image:imageName});
         await newBlog.save();
         res.json('success');
     }catch(err){
