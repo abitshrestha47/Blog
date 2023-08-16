@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const User=require('./models/User');
+const Blog=require('./models/Blog');
 const router=express.Router();
+const blogrouter=express.Router();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const bcrypt=require('bcrypt');
@@ -36,9 +38,22 @@ router.post('/',async (req,res)=>{
     }
 })
 
+blogrouter.post('/',async(req,res)=>{
+    const {title,story,category,image}=req.body;
+    try{
+        const newBlog=new Blog({title,story,category,image});
+        await newBlog.save();
+        res.json('success');
+    }catch(err){
+        res.status(500).json({error:`Failed to create blog`});
+    }
+
+})
+
 
 //mounting the routes
 app.use('/signup', router);
+app.use('/publishingblog',blogrouter);
 
 app.listen(2000,()=>{
     console.log(`Server Listening on http://localhost:2000`);
