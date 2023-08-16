@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const User=require('./models/User');
-const router=express.Router();
-const loginRouter=express.Router();
+const Blog=require('./models/Blog');
+const blogrouter=express.Router();
+const getBlogs=express.Router();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
+const loginRouter = require('./routes/loginrouter');
+const multer  = require('multer')
+const router=require('./routes/signuprouter');
 
 require('./dbconfig');
 //cors to fetch between front and back to solve cors error simpy
@@ -15,52 +18,47 @@ app.use(cors());
 //to fetch the data from the req.body middleware
 app.use(express.json());
 
-//using router for routes
-router.post('/',async (req,res)=>{
-    const {username,email,password}=req.body;
-    //to bcrypt password on 2^10 computational cost 
-    const hashedPassword=await bcrypt.hash(password,10);
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '../front-end/public/Images')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now()
+      cb(null, uniqueSuffix+file.originalname);
+    }
+  })
+  
+  const upload = multer({ storage: storage })
+
+blogrouter.post('/',upload.single('image'),async(req,res)=>{
+    console.log('fsd');
+    const {title,story,category}=req.body;
+    const imageName=req.file.filename;
     try{
-        const existingUser=await User.findOne({email});
-        if(existingUser){
-            res.json('existed');
-        }else{
-            console.log(hashedPassword);
-            const newUser=new User({username,email,password:hashedPassword});
-            await newUser.save();
-            console.log(newUser);
-            res.json('success');
-        }
-    }catch(error){
-        res.status(500).json({error:`Failed to signup ${error.message}`});
+        const newBlog=new Blog({title,story,category,image:imageName});
+        await newBlog.save();
+        res.json('success');
+    }catch(err){
+        res.status(500).json({error:`Failed to create blog`});
+    }
+
+})
+
+getBlogs.get('/',async(req,res)=>{
+    try{
+        const blogs=await Blog.find();
+        res.json(blogs);
+    }catch(err){
+        res.status(500).json({error:`Failed to fetch blogs`});
     }
 })
 
-loginRouter.post('/',async (req,res)=>{
-    const {email,password}=req.body;
-    console.log(password)
-    try{
-        const existEmail=await User.findOne({email});
-        if(existEmail){
-            const passwordMatch=await bcrypt.compare(password,existEmail.password);
-            if(!passwordMatch){
-                res.json(`wrongpassword`);
-            }
-            else{
-                console.log(`check`);
-                const secretKey='secret_key';
-                const token=jwt.sign({userId:existEmail._id},secretKey,{expiresIn:'1h'});
-                res.status(200).json({message:'success'});
-            }
-        }
-    }catch(e){
-
-    }
-})
 
 //mounting the routes
 app.use('/signup', router);
+app.use('/publishingblog',blogrouter);
 app.use('/login',loginRouter);
+app.use('/',getBlogs);
 
 app.listen(2000,()=>{
     console.log(`Server Listening on http://localhost:2000`);
