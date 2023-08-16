@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+.image{
+  width:100%;
+  height:500px;
+}
+.btn{
+  width:150px;
+}
+
 .signup,.login{
   max-width:400px;
   margin:0 auto;
